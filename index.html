@@ -2,28 +2,55 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" href ="style.css">
 <body>
-    <!-- body of the website. -->
-    <div name = "btn-all-numbers">
-    <div name = "btn-789-row"><button name = "7">7</button> <button name = "8">8</button> <button name = "9">9</button></div>
-    <div name = "btn-456-row"><button name = "4">4</button> <button name = "5">5</button> <button name = "6">6</button></div>
-    <div name = "btn-123-row"><button name = "1">1</button> <button name = "2">2</button> <button name = "3">3</button></div>
-    <div name = "btn-0-row"><button name = "0">0</button> </div>
-    </div>
-    <div name = "btn-basic-row">
-    <button name = "+">+</button> <button name = "-">-</button>
-    <button name = "*">*</button> <button name = "/">/</button>
-    </div>
-    <div name = "btn-geometric-row">
-    <button>sin(</button> <button>cos(</button> <button>tan(</button>
-    </div>
-    <div name = "btn-log-row">
-    <button>ln(</button> <button>log(</button>
-    </div>
-    <div name = "btn-paren-row">
-    <button>(</button> <button>)</button>
-    <button>{</button> <button>}</button>
-    </div>
-    <div name = "btn-equals-row">
-    <button>=</button> <button>CE</button>
-    </div>
+    <!-- display() displays the value of the button -->
+    <!-- clearScreen() clears the values placed on the screen -->
+    <!-- calculate() performs the calculation that was provided on the screen -->
+    <table class=calculator>
+        <tr>
+            <td colspan="4"> <input class="display" type="text" id="result" disabled> </td>
+        </tr>
+        <tr>
+            <td> <input type="button" value="log(" onclick="display( 'log(' )"> </td>
+            <td> <input type="button" value="ln(" onclick="display( 'ln(' )"> </td>
+            <td> <input type="button" value="^" onclick="display( '^' )"> </td>
+            <td> <input type="button" value="C" onclick="clearScreen()" id="clearBtn"> </td>
+        </tr>
+        <tr>
+            <td> <input type="button" value="sin(" onclick="display( 'sin(' )"> </td>
+            <td> <input type="button" value="cos(" onclick="display( 'cos(' )"> </td>
+            <td> <input type="button" value="tan(" onclick="display( 'tan(' )"> </td>
+            <td> <input type="button" value="cot(" onclick="display( 'cot(' )"> </td>
+        </tr>
+        <tr>
+            <td> <input type="button" value="(" onclick="display( '(' )"> </td>
+            <td> <input type="button" value=")" onclick="display( ')' )"> </td>
+            <td> <input type="button" value="{" onclick="display( '{' )"> </td>
+            <td> <input type="button" value="}" onclick="display( '}' )"> </td>
+        </tr>
+        <tr>
+            <td> <input type="button" value="7" onclick="display('7')" /></td>
+            <td> <input type="button" value="8" onclick="display('8')" /></td>
+            <td> <input type="button" value="9" onclick="display('9')" /></td>
+            <td> <input type="button" value="/" onclick="display('/')" /></td>
+        </tr>
+        <tr>
+            <td> <input type="button" value="4" onclick="display('4')" /></td>
+            <td> <input type="button" value="5" onclick="display('5')" /></td>
+            <td> <input type="button" value="6" onclick="display('6')" /></td>
+            <td> <input type="button" value="*" onclick="display('*')" /></td>
+        </tr>
+        <tr>
+            <td> <input type="button" value="1" onclick="display('1')" /></td>
+            <td> <input type="button" value="2" onclick="display('2')" /></td>
+            <td> <input type="button" value="3" onclick="display('3')" /></td>
+            <td> <input type="button" value="-" onclick="display('-')" /></td>
+        </tr>
+        <tr>
+            <td> <input type="button" value="0" onclick="display('0')" /></td>
+            <td> <input type="button" value="." onclick="display('.')" /></td>
+            <td> <input type="button" value="=" onclick="calculate()" /></td>
+            <td> <input type="button" value="+" onclick="display('+')" /></td>
+        </tr>
+    </table>
+    <script src="calculator.js"></script>
 </body>
