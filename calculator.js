@@ -10,8 +10,17 @@ function display(value)
 
 function calculate() 
 {
-    var i = document.getElementById("result").value;
+    // following the pseudocode found on wikipedia.org/wiki/Shunting_yard_algorithm
+    let iterator = 0; // used to iterate array
+    var input = document.getElementById("result").value;
     document.getElementById("result").value = "";
+    let tokens = input.split("");
+    while (iterator < tokens.length)
+    {
+        
+        iterator++;
+    }
+
     // perform mathematical functions on i to ensure valid result
     // do not just use eval
 }
