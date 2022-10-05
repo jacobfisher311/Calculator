@@ -10,37 +10,15 @@ function display(value)
 
 function calculate() 
 {
-    // following the pseudocode found on wikipedia.org/wiki/Shunting_yard_algorithm
     let iterator = 0; // used to iterate array
     var stack = [];
     var input = document.getElementById("result").value;
     var tokensArray = input.split(""); // turn the string into an array of characters
     var tokens = Splitter(tokensArray); // turn the array of characters into readable tokens
-    console.log(tokens);
-    while (iterator < tokens.length)
-    {
-        var currToken = tokens[iterator];
+    var postFix = inToPost(tokens);
+    var answer = evaluate(postFix);
 
-        if (isNum(currToken))
-        {
-            stack.push(currToken);
-        }
-        else if (isOperator(currToken))
-        {
-            var op1 = stack.pop();
-            var op2 = stack.pop();
-
-            var result = performOperation(parseInt(op1), parseInt(op2), currToken);
-            stack.push(result);
-        }
-        else if (isFunc(currToken))
-        {
-
-        }
-        iterator++;
-    }
-    let a = stack.pop();
-    // document.getElementById("result").value = a;
+    document.getElementById("test").textContent = tokens;
 }
 
 function Splitter(input)
@@ -94,7 +72,39 @@ function Splitter(input)
     return returnTokens;
 
 }
+function inToPost(token)
+{
 
+}
+
+function evaluate(tokens)
+{
+    let iterator = 0;
+    while (iterator < tokens.length)
+    {
+        var currToken = tokens[iterator];
+
+        if (isNum(currToken))
+        {
+            stack.push(currToken);
+        }
+        else if (isOperator(currToken))
+        {
+            var op1 = stack.pop();
+            var op2 = stack.pop();
+
+            var result = performOperation(parseInt(op1), parseInt(op2), currToken);
+            stack.push(result);
+        }
+        else if (isFunc(currToken))
+        {
+
+        }
+        iterator++;
+    }
+    let a = stack.pop();
+    // document.getElementById("result").value = a;
+}
 function isOperator(token)
 {
     if(!token.match(/([*+-\/])/))
@@ -102,6 +112,33 @@ function isOperator(token)
     else 
         return true;
     
+}
+
+function performOperation(op1, op2, operator)
+{
+    switch (operator)
+    {
+        case '+':
+            return op1 + op2;
+        case '-':
+            return op1 - op2;
+        case '*':
+            return op1 * op2;
+        case '/':
+            return op1 / op2;
+        default:
+            return;
+
+        /* unary operators
+        case 'sin(':
+        case 'cos(':
+        case 'tan(':
+        case 'cot(':
+        case 'log':
+        case 'ln':
+        case '^':
+        */ 
+    }
 }
 
 function isNum(token)
