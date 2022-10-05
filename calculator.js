@@ -10,25 +10,26 @@ function display(value)
 
 function calculate() 
 {
-    let iterator = 0; // used to iterate array
-    var stack = [];
     var input = document.getElementById("result").value;
-    var tokensArray = input.split(""); // turn the string into an array of characters
-    var tokens = Splitter(tokensArray); // turn the array of characters into readable tokens
+    var tokensArray = input.split("");
+    var tokens = Splitter(tokensArray);
+    document.getElementById("test").textContent = tokens; // turn the array of characters into readable tokens
     var postFix = inToPost(tokens);
     var answer = evaluate(postFix);
 
-    document.getElementById("test").textContent = tokens;
+    //document.getElementById("test").textContent = tokensArray; // change "test" to "result"
+    document.getElementById("result").value = "";
 }
 
 function Splitter(input)
 {
     var returnTokens = [];
-    var i = 0;
+    var i = 0; // iterate through the array of characters
     var operators = ['+','-','*','/','^','(',')', '{', '}'];
+
     while (i < input.length)
     {
-        if(operators.indexOf(input[i]) != -1 && input(i) != '-')
+        if(operators.indexOf(input[i]) != -1 && input[i] != '-')
         {
             returnTokens.push(input[i]);
         }
@@ -60,10 +61,13 @@ function Splitter(input)
         }
         else
         {
-            let a; // a variable to hold onto the number until we reach a breaking point
+            
+            // match i to /-?[0-9]+(\.[0-9]+)?/ --?
+            let a = ""; // a variable to hold onto the number until we reach a breaking point
             while(i < input.length && operators.indexOf(input[i] == -1))
             {
-                a += input[i].toString();
+                
+                a += input[i];
                 i++;
             }
             returnTokens.push(a);
@@ -153,6 +157,8 @@ function getPres(token)
 {
     switch(token)
     {
+        case 'neg':
+            return 5;
         case '^':
             return 4;
         case '*':
