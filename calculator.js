@@ -14,8 +14,9 @@ function calculate()
     let iterator = 0; // used to iterate array
     var stack = [];
     var input = document.getElementById("result").value;
-    document.getElementById("result").value = "";
-    let tokens = input.split("");
+    var tokensArray = input.split(""); // turn the string into an array of characters
+    var tokens = Splitter(tokensArray); // turn the array of characters into readable tokens
+    console.log(tokens);
     while (iterator < tokens.length)
     {
         var currToken = tokens[iterator];
@@ -38,9 +39,60 @@ function calculate()
         }
         iterator++;
     }
+    let a = stack.pop();
+    // document.getElementById("result").value = a;
+}
 
-    // perform mathematical functions on i to ensure valid result
-    // do not just use eval
+function Splitter(input)
+{
+    var returnTokens = [];
+    var i = 0;
+    var operators = ['+','-','*','/','^','(',')', '{', '}'];
+    while (i < input.length)
+    {
+        if(operators.indexOf(input[i]) != -1 && input(i) != '-')
+        {
+            returnTokens.push(input[i]);
+        }
+        else if(input[i] == '-')
+        {
+            if(i === 0)
+            {
+                returnTokens.push('neg');
+                i++;
+            }
+            else if(input[i-1] == '(' || input[i-1] == '{')
+            {
+                returnTokens.push('neg');
+                i++;
+            }
+            else if(input[i - 1] != ')' || input[i - 1] !=  '}')
+            {
+                if(operators.indexOf(input[i-1] != -1))
+                {
+                    returnTokens.push('neg');
+                    i++;
+                }
+            }
+            else
+            {
+                returnTokens.push('-');
+                i++;
+            }
+        }
+        else
+        {
+            let a; // a variable to hold onto the number until we reach a breaking point
+            while(i < input.length && operators.indexOf(input[i] == -1))
+            {
+                a += input[i].toString();
+                i++;
+            }
+            returnTokens.push(a);
+        }
+    }
+    return returnTokens;
+
 }
 
 function isOperator(token)
@@ -54,10 +106,10 @@ function isOperator(token)
 
 function isNum(token)
 {
-    if (!token.match(/-?[0-9]+(\.[0-9]+)?/))
-        return false;
-    else 
+    if (token.match(/-?[0-9]+(\.[0-9]+)?/))
         return true;
+    else 
+        return false;
 }
     // Function to acquire the presidence of the operator
 function getPres(token)
