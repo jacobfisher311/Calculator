@@ -12,6 +12,7 @@ function calculate()
 {
     var input = document.getElementById("result").value;
     var tokensArray = input.split("");
+    document.getElementById("test").textContent = tokensArray;
     var tokens = Splitter(tokensArray);
     document.getElementById("test").textContent = tokens; // turn the array of characters into readable tokens
     var postFix = inToPost(tokens);
@@ -25,33 +26,33 @@ function Splitter(input)
 {
     var returnTokens = [];
     var i = 0; // iterate through the array of characters
-    var operators = ['+','-','*','/','^','(',')', '{', '}'];
+    var operators = ['+','-','*','/','^'];
 
     while (i < input.length)
     {
         if(operators.indexOf(input[i]) != -1 && input[i] != '-')
         {
             returnTokens.push(input[i]);
+            i++;
         }
         else if(input[i] == '-')
         {
-            if(i === 0)
+            // checks to determine if it is subtraction or negation
+            if(i === 0) // if position 0
             {
                 returnTokens.push('neg');
                 i++;
             }
-            else if(input[i-1] == '(' || input[i-1] == '{')
+            else if(input[i-1] == '(' || input[i-1] == '{') // if the preceeding value is open bracket
             {
                 returnTokens.push('neg');
                 i++;
             }
-            else if(input[i - 1] != ')' || input[i - 1] !=  '}')
+            else if(operators.indexOf(input[i-1] != -1)) // if preceeding value is an operator
             {
-                if(operators.indexOf(input[i-1] != -1))
-                {
-                    returnTokens.push('neg');
-                    i++;
-                }
+               returnTokens.push('neg');
+               document.getElementById("bottomtest").textContent = "issue here";
+               i++;
             }
             else
             {
@@ -59,18 +60,33 @@ function Splitter(input)
                 i++;
             }
         }
-        else
+        else if(input[i] == 's'|| input[i] == 'c'|| input[i] == 't'|| input[i] == 'l')
         {
-            
-            // match i to /-?[0-9]+(\.[0-9]+)?/ --?
-            let a = ""; // a variable to hold onto the number until we reach a breaking point
-            while(i < input.length && operators.indexOf(input[i] == -1))
+            // differentiate which type of function is being expressed and properly push to stack
+            returnTokens.push(input[i]);
+            i++;
+        }
+        else
+        {  
+            while(i < input.length)
             {
-                
-                a += input[i];
+            
+                let a = input[i].toString(); // a variable to hold onto the number until we reach a breaking point
                 i++;
+                if (typeof(input[i]) == 'number')
+                {
+                    a += input[i + 1];
+                    i++;
+                }
+                else if (input[i] == '.')
+                {
+                    a += input[i];
+                    i++;
+                }
+                else break;
             }
             returnTokens.push(a);
+            //a = '';
         }
     }
     return returnTokens;
