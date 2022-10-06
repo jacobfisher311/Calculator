@@ -12,7 +12,7 @@ function calculate()
 {
     var input = document.getElementById("result").value;
     var tokensArray = input.split("");
-    document.getElementById("test").textContent = tokensArray;
+    //document.getElementById("test").textContent = tokensArray;
     var tokens = Splitter(tokensArray);
     document.getElementById("test").textContent = tokens; // turn the array of characters into readable tokens
     var postFix = inToPost(tokens);
@@ -48,12 +48,13 @@ function Splitter(input)
                 returnTokens.push('neg');
                 i++;
             }
-            else if(operators.indexOf(input[i-1] != -1)) // if preceeding value is an operator
+            /*else if(operators.indexOf(input[i-1] != -1)) // if preceeding value is an operator
             {
                returnTokens.push('neg');
                document.getElementById("bottomtest").textContent = "issue here";
                i++;
             }
+            */
             else
             {
                 returnTokens.push('-');
@@ -68,10 +69,11 @@ function Splitter(input)
         }
         else
         {  
+            let a = '';
             while(i < input.length)
             {
-            
-                let a = input[i].toString(); // a variable to hold onto the number until we reach a breaking point
+                //let a = input[i].toString(); // a variable to hold onto the number until we reach a breaking point
+                a = input[i].toString();
                 i++;
                 if (typeof(input[i]) == 'number')
                 {
