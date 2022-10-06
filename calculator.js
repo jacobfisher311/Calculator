@@ -73,12 +73,13 @@ function Splitter(input)
             while(i < input.length)
             {
                 //let a = input[i].toString(); // a variable to hold onto the number until we reach a breaking point
-                a = input[i].toString();
-                i++;
-                if (typeof(input[i]) == 'number')
+                //a = input[i].toString();
+                //i++;
+                if (!isNaN(input[i]))
                 {
-                    a += input[i + 1];
+                    a += input[i];
                     i++;
+                    continue;
                 }
                 else if (input[i] == '.')
                 {
@@ -87,14 +88,16 @@ function Splitter(input)
                 }
                 else break;
             }
-            returnTokens.push(a);
-            //a = '';
+
+            if(a == '') { i++; continue; }
+            else returnTokens.push(a);
+            //i++;
         }
     }
     return returnTokens;
 
 }
-function inToPost(token)
+function inToPost(tokens)
 {
 
 }
