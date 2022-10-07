@@ -20,11 +20,12 @@ function calculate()
     var tokensArray = input.split("");
     //document.getElementById("test").textContent = tokensArray;
     var tokens = Splitter(tokensArray); // turn the array of characters into readable tokens
-    document.getElementById("test").textContent = tokens; 
+    // document.getElementById("test").textContent = tokens; 
     var postFix = inToPost(tokens);
+    document.getElementById("test").textContent = postFix;
     var answer = evaluate(postFix);
+    document.getElementById("bottomtest").textContent = answer;
 
-    //document.getElementById("test").textContent = tokensArray; // change "test" to "result"
     document.getElementById("result").value = "";
 }
 
@@ -32,7 +33,7 @@ function Splitter(input)
 {
     var returnTokens = [];
     var i = 0; // iterate through the array of characters
-    var operators = ['+','-','*','/','^'];
+    var operators = ['+','-','*','/','^', '(', '{', ')', '}'];
     while (i < input.length)
     {
         if(operators.indexOf(input[i]) != -1 && input[i] != '-')
@@ -65,10 +66,53 @@ function Splitter(input)
             let a = '';
             if(input[i] == 's')
             {
-                
+                a = "sin";
+                i += 3;
+                returnTokens.push(a);
+                continue;
             }
-            returnTokens.push(input[i]);
-            i++;
+            if(input[i] == 'c')
+            {
+                if(input[i + 2] == 't')
+                {
+                    a = "cot";
+                    i += 3;
+                    returnTokens.push(a);
+                    continue;
+                }
+                else
+                {
+                    a = "cos";
+                    i += 3;
+                    returnTokens.push(a);
+                    continue;
+                }
+            }
+            if(input[i] == 't')
+            {
+                a = "tan";
+                i += 3;
+                returnTokens.push(a);
+                continue;
+            }
+            if(input[i] == 'l')
+            {
+                if(input[i + 1] == 'n')
+                {
+                    a = 'ln';
+                    i += 2;
+                    returnTokens.push(a);
+                    continue;
+                }
+                else
+                {
+                    a = "log";
+                    i += 3;
+                    returnTokens.push(a);
+                    continue;
+                }
+            }
+            
         }
         else
         {  
@@ -101,47 +145,72 @@ function Splitter(input)
     return returnTokens;
 
 }
+// inspiration for this function from stackoverflow.com/questions/20078413/trouble-with-the-shunting-yard-algorithm
 function inToPost(tokens)
 {
-    var stack = [], list = [];
+    var stack = [], list = [], i;
     var operators = ['+','-','*','/','^'];
+    var functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log'];
+    for(i = 0;  i < tokens.length; i++)
+    {
+        if(operators.indexOf(tokens[i]) != -1)
+        {
+            while(stack.length != -1 && getPres(stack[stack.length - 1]) >= getPres(tokens[i]))
+                list.push(stack.pop());
+            stack.push(tokens[i]);
+        }
+        else if(functions.indexOf(tokens[i]) != -1)
+        {
+            while(stack.length != -1 && getPres(stack[stack.length - 1]) >= getPres(tokens[i]))
+                list.push(stack.pop());
+            stack.push(tokens[i]);
+        }
+        else if(tokens[i] == '(' || tokens[i] == '(')
+            stack.push(tokens[i]); // stack.push('(');
+        
+        else if(tokens[i] == ')' || tokens[i] == '}')
+        {
+            while(stack[stack.length-1] != '(')
+            {
+                list.push(stack.pop());
+                if(stack.length == 0)
+                    return "Paren balancing error";
+            }
+            stack.pop();
+        }
+        else list.push(tokens[i]); 
+    }
+    while(stack.length != 0)
+        list.push(stack.pop());
+    return list;
 }
 
 function evaluate(tokens)
 {
-    let iterator = 0;
-    while (iterator < tokens.length)
+    var i = 0;
+    var stack = [];
+    var operators = ['+','-','*','/','^'];
+    let functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log'];
+    for(i = 0; i < tokens.length; i++)
     {
-        var currToken = tokens[iterator];
-
-        if (isNum(currToken))
-        {
-            stack.push(currToken);
-        }
-        else if (isOperator(currToken))
+        if(operators.indexOf(tokens[i]) != -1)
         {
             var op1 = stack.pop();
             var op2 = stack.pop();
 
-            var result = performOperation(parseInt(op1), parseInt(op2), currToken);
+            var result = performOperation(parseFloat(op1), parseFloat(op2), tokens[i]);
             stack.push(result);
         }
-        else if (isFunc(currToken))
+        else if(functions.indexOf(tokens[i]) != -1)
         {
-
+            var op = stack.pop();
+            var funcResult = performFunc(parseFloat(op), tokens[i]);
+            stack.push(funcResult);
         }
-        iterator++;
+        else stack.push(tokens[i]);
+        
     }
-    let a = stack.pop();
-    // document.getElementById("result").value = a;
-}
-function isOperator(token)
-{
-    if(!token.match(/([*+-\/])/))
-        return false;
-    else 
-        return true;
-    
+    return stack.pop();
 }
 
 function performOperation(op1, op2, operator)
@@ -151,39 +220,50 @@ function performOperation(op1, op2, operator)
         case '+':
             return op1 + op2;
         case '-':
-            return op1 - op2;
+            return op2 - op1;
         case '*':
             return op1 * op2;
         case '/':
-            return op1 / op2;
+            return op2 / op1;
+        case '^':
+            return Math.pow(op2, op1);
         default:
             return;
-
-        /* unary operators
-        case 'sin(':
-        case 'cos(':
-        case 'tan(':
-        case 'cot(':
-        case 'log':
-        case 'ln':
-        case '^':
-        */ 
     }
 }
-
-function isNum(token)
+function performFunc(op, func)
 {
-    if (token.match(/-?[0-9]+(\.[0-9]+)?/))
-        return true;
-    else 
-        return false;
-}
-    // Function to acquire the presidence of the operator
+    switch (func)
+    {
+        case 'sin':
+            return Math.sin(op);
+        case 'cos':
+            return Math.cos(op);
+        case 'tan':
+            return Math.tan(op);
+        case 'cot':
+            return Math.cot(op);
+        case 'log':
+            return Math.ln10(op)
+        case 'ln':
+            return Math.log(op);
+        default:
+            return;
+    }
+}  
+// Function to acquire the presidence of the operator
 function getPres(token)
 {
     switch(token)
     {
         case 'neg':
+            return 6;
+        case 'sin':
+        case 'cos':
+        case 'tan':
+        case 'cot':
+        case 'ln':
+        case 'log':
             return 5;
         case '^':
             return 4;
@@ -198,20 +278,6 @@ function getPres(token)
     }
 }
 
-function isFunc(token)
-{
-    switch(token)
-    {
-        case 's':
-        case 'c':
-        case 't':
-        case 'l':
-            return true;
-        default:
-            return false;
-
-    }
-}
 
 function getAssoc(token)
 {
