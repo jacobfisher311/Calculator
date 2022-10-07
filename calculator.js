@@ -2,7 +2,13 @@ function clearScreen()
 {
     document.getElementById("result").value = "";
 }
- 
+
+function clearEntry()
+{
+    let a = document.getElementById("result").value;
+    if(a == '') return;
+    else document.getElementById("result").value = a.substring(0, a.length - 1);
+}
 function display(value) 
 {
     document.getElementById("result").value += value;
@@ -13,8 +19,8 @@ function calculate()
     var input = document.getElementById("result").value;
     var tokensArray = input.split("");
     //document.getElementById("test").textContent = tokensArray;
-    var tokens = Splitter(tokensArray);
-    document.getElementById("test").textContent = tokens; // turn the array of characters into readable tokens
+    var tokens = Splitter(tokensArray); // turn the array of characters into readable tokens
+    document.getElementById("test").textContent = tokens; 
     var postFix = inToPost(tokens);
     var answer = evaluate(postFix);
 
@@ -27,7 +33,6 @@ function Splitter(input)
     var returnTokens = [];
     var i = 0; // iterate through the array of characters
     var operators = ['+','-','*','/','^'];
-
     while (i < input.length)
     {
         if(operators.indexOf(input[i]) != -1 && input[i] != '-')
@@ -48,13 +53,6 @@ function Splitter(input)
                 returnTokens.push('neg');
                 i++;
             }
-            /*else if(operators.indexOf(input[i-1] != -1)) // if preceeding value is an operator
-            {
-               returnTokens.push('neg');
-               document.getElementById("bottomtest").textContent = "issue here";
-               i++;
-            }
-            */
             else
             {
                 returnTokens.push('-');
@@ -64,6 +62,11 @@ function Splitter(input)
         else if(input[i] == 's'|| input[i] == 'c'|| input[i] == 't'|| input[i] == 'l')
         {
             // differentiate which type of function is being expressed and properly push to stack
+            let a = '';
+            if(input[i] == 's')
+            {
+                
+            }
             returnTokens.push(input[i]);
             i++;
         }
@@ -85,6 +88,7 @@ function Splitter(input)
                 {
                     a += input[i];
                     i++;
+                    continue;
                 }
                 else break;
             }
@@ -99,7 +103,8 @@ function Splitter(input)
 }
 function inToPost(tokens)
 {
-
+    var stack = [], list = [];
+    var operators = ['+','-','*','/','^'];
 }
 
 function evaluate(tokens)

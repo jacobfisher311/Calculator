@@ -6,15 +6,16 @@
     <!-- clearScreen() clears the values placed on the screen -->
     <!-- calculate() performs the calculation that was provided on the screen -->
     <h1 id="test"></h1>
-    <table class=calculator>
+    <table class="calculator">
         <tr>
-            <td colspan="4"> <input class="display" type="text" id="result" disabled> </td>
+            <td colspan="3"> <input class="display" type="text" id="result" disabled> </td>
+            <td> <input type="button" value="C" onclick="clearScreen()" id="clearBtn"> </td>
         </tr>
         <tr>
             <td> <input type="button" value="log(" onclick="display( 'log(' )"> </td>
             <td> <input type="button" value="ln(" onclick="display( 'ln(' )"> </td>
             <td> <input type="button" value="^" onclick="display( '^' )"> </td>
-            <td> <input type="button" value="C" onclick="clearScreen()" id="clearBtn"> </td>
+            <td> <input type="button" value="CE" onclick="clearEntry()" id="clearBtn2"> </td>
         </tr>
         <tr>
             <td> <input type="button" value="sin(" onclick="display( 'sin(' )"> </td>
