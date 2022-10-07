@@ -18,15 +18,11 @@ function calculate()
 {
     var input = document.getElementById("result").value;
     var tokensArray = input.split("");
-    //document.getElementById("test").textContent = tokensArray;
     var tokens = Splitter(tokensArray); // turn the array of characters into readable tokens
-    // document.getElementById("test").textContent = tokens; 
-    var postFix = inToPost(tokens);
+    var postFix = inToPost(tokens); // switch notation from infix to postfix
     document.getElementById("test").textContent = postFix;
-    var answer = evaluate(postFix);
-    document.getElementById("bottomtest").textContent = answer;
-
-    document.getElementById("result").value = "";
+    var answer = evaluate(postFix); // evaluate postfix notation
+    document.getElementById("result").value = answer;
 }
 
 function Splitter(input)
@@ -145,6 +141,7 @@ function Splitter(input)
     return returnTokens;
 
 }
+
 // inspiration for this function from stackoverflow.com/questions/20078413/trouble-with-the-shunting-yard-algorithm
 function inToPost(tokens)
 {
@@ -174,14 +171,23 @@ function inToPost(tokens)
             {
                 list.push(stack.pop());
                 if(stack.length == 0)
-                    return "Paren balancing error";
+                    return "Perror";
             }
             stack.pop();
         }
         else list.push(tokens[i]); 
     }
-    while(stack.length != 0)
-        list.push(stack.pop());
+    //if(stack.peek() == '{' || stack.peek() == '(') return "Paren balancing error";
+    // else
+    {
+        while(stack.length != 0)
+        {
+            if(stack[stack.length - 1] == '{' || stack[stack.length - 1] == '(' || stack[stack.length - 1] == ')' || stack[stack.length - 1] == '}')
+                return "Perror";
+            else list.push(stack.pop());
+        }
+        
+    } 
     return list;
 }
 
@@ -191,8 +197,18 @@ function evaluate(tokens)
     var stack = [];
     var operators = ['+','-','*','/','^'];
     let functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log'];
+
+    if(tokens == "Perror") return "Parenthesis balancing error";
+
     for(i = 0; i < tokens.length; i++)
     {
+        if (tokens[i] == 'neg')
+        {
+            tokens[i+1] = parseFloat(tokens[i + 1])*-1;
+            stack.push(tokens[i+1].toString());
+            i++;
+            continue;
+        }
         if(operators.indexOf(tokens[i]) != -1)
         {
             var op1 = stack.pop();
@@ -213,6 +229,7 @@ function evaluate(tokens)
     return stack.pop();
 }
 
+// Helper function to perform operations involving two operands
 function performOperation(op1, op2, operator)
 {
     switch (operator)
@@ -231,6 +248,8 @@ function performOperation(op1, op2, operator)
             return;
     }
 }
+
+// Helper function to perform functions involving a singular operand
 function performFunc(op, func)
 {
     switch (func)
@@ -251,7 +270,8 @@ function performFunc(op, func)
             return;
     }
 }  
-// Function to acquire the presidence of the operator
+
+// Helper function to get presidence of functions / operations
 function getPres(token)
 {
     switch(token)
@@ -275,26 +295,5 @@ function getPres(token)
             return 2;
         default:
             return -1;
-    }
-}
-
-
-function getAssoc(token)
-{
-    switch(token)
-    {
-        case '+':
-        case '-':
-        case '*':
-        case '/':
-            return 'left';
-        case '^':
-        case 'sin':
-        case 'cos':
-        case 'tan':
-        case 'cot':
-        case 'ln':
-        case 'log':
-            return 'right';
     }
 }
