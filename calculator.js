@@ -1,29 +1,29 @@
 function clearScreen() 
 {
-    document.getElementById("result").value = "";
+    document.getElementById('result').value = '';
 }
 
 function clearEntry()
 {
-    let a = document.getElementById("result").value;
+    let a = document.getElementById('result').value;
     if(a == '') return;
-    else document.getElementById("result").value = a.substring(0, a.length - 1);
+    else document.getElementById('result').value = a.substring(0, a.length - 1);
 }
 
 function display(value) 
 {
-    document.getElementById("result").value += value;
+    document.getElementById('result').value += value;
 }
 
 function calculate() 
 {
-    var input = document.getElementById("result").value;
-    var tokensArray = input.split("");
+    var input = document.getElementById('result').value;
+    var tokensArray = input.split('');
     var tokens = Splitter(tokensArray); // turn the array of characters into readable tokens
     var postFix = inToPost(tokens); // switch notation from infix to postfix
     var answer = evaluate(postFix); // evaluate postfix notation
     answer = checkValidity(answer);
-    document.getElementById("result").value = answer;
+    document.getElementById('result').value = answer;
 }
 
 function Splitter(input)
@@ -75,7 +75,7 @@ function Splitter(input)
             let a = '';
             if(input[i] == 's')
             {
-                a = "sin";
+                a = 'sin';
                 i += 3;
                 returnTokens.push(a);
                 continue;
@@ -84,14 +84,14 @@ function Splitter(input)
             {
                 if(input[i + 2] == 't')
                 {
-                    a = "cot";
+                    a = 'cot';
                     i += 3;
                     returnTokens.push(a);
                     continue;
                 }
                 else
                 {
-                    a = "cos";
+                    a = 'cos';
                     i += 3;
                     returnTokens.push(a);
                     continue;
@@ -99,7 +99,7 @@ function Splitter(input)
             }
             if(input[i] == 't')
             {
-                a = "tan";
+                a = 'tan';
                 i += 3;
                 returnTokens.push(a);
                 continue;
@@ -115,7 +115,7 @@ function Splitter(input)
                 }
                 else
                 {
-                    a = "log";
+                    a = 'log';
                     i += 3;
                     returnTokens.push(a);
                     continue;
@@ -183,7 +183,7 @@ function inToPost(tokens)
             {
                 list.push(stack.pop());
                 if(stack.length == 0)
-                    return "Perror";
+                    return 'Perror';
             }
             stack.pop();
         }
@@ -192,7 +192,7 @@ function inToPost(tokens)
         while(stack.length != 0)
         {
             if(stack[stack.length - 1] == '(' || stack[stack.length - 1] == ')')
-                return "Perror";
+                return 'Perror';
             else list.push(stack.pop());
         }
          
@@ -206,7 +206,7 @@ function evaluate(tokens)
     var operators = ['+','-','*','/','^'];
     let functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log', 'neg'];
 
-    if(tokens == "Perror") return "Perror";
+    if(tokens == 'Perror') return 'Perror';
 
     for(i = 0; i < tokens.length; i++)
     {
@@ -229,7 +229,7 @@ function evaluate(tokens)
     }
     if(stack.length == 1)
         return stack.pop();
-    else return "NaN";
+    else return 'Multi';
 }
 
 // Helper function to perform operations involving two operands
@@ -266,7 +266,7 @@ function performFunc(op, func)
         case 'cot':
             return Math.cot(op);
         case 'log':
-            return Math.ln10(op)
+            return Math.log10(op)
         case 'ln':
             return Math.log(op);
         case 'neg':
@@ -306,14 +306,19 @@ function getPres(token)
 // Helper function for errors, or NaN answers
 function checkValidity(answer)
 {
-    if(answer == "Perror")
+    if(answer == 'Perror')
     {
-        alert('Parenthesis balancing error');
+        alert('Parenthesis balancing error.');
         return '';
     }
-    else if (answer.toString() === 'NaN')
+    else if(answer == 'Multi')
     {
-        alert('Invalid mathematical equation');
+        alert('Multiplication error.');
+        return '';
+    }
+    else if(answer.toString() === 'NaN')
+    {
+        alert('Invalid mathematical equation.');
         return '';
     }
     else return answer;
