@@ -311,6 +311,11 @@ function checkValidity(answer)
         alert('Parenthesis balancing error.');
         return '';
     }
+    else if(answer == 'Infinity')
+    {
+        alert('Error. Answer results in: ' + answer + '.');
+        return '';
+    }
     else if(answer == 'Multi')
     {
         alert('Multiplication error.');
