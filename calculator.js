@@ -21,7 +21,6 @@ function calculate()
     var tokensArray = input.split("");
     var tokens = Splitter(tokensArray); // turn the array of characters into readable tokens
     var postFix = inToPost(tokens); // switch notation from infix to postfix
-    document.getElementById("bottomtest").textContent = postFix;
     var answer = evaluate(postFix); // evaluate postfix notation
     answer = checkValidity(answer);
     document.getElementById("result").value = answer;
@@ -228,7 +227,9 @@ function evaluate(tokens)
         else stack.push(tokens[i]);
         
     }
-    return stack.pop();
+    if(stack.length == 1)
+        return stack.pop();
+    else return "NaN";
 }
 
 // Helper function to perform operations involving two operands
