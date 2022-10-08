@@ -30,9 +30,13 @@ function Splitter(input)
 {
     var returnTokens = [];
     var i = 0; // iterate through the array of characters
-    var operators = ['+','-','*','/','^', '(', '{', ')', '}'];
+    var operators = ['+','-','*','/','^', '(', ')'];
     while (i < input.length)
     {
+        // Helps clean up parenthesis confusion.
+        if (input[i] == '{') input[i] = '(';
+        if (input[i] == '}') input[i] = ')';
+        
         if(operators.indexOf(input[i]) != -1 && input[i] != '-')
         {
             returnTokens.push(input[i]);
@@ -46,10 +50,18 @@ function Splitter(input)
                 returnTokens.push('neg');
                 i++;
             }
-            else if(input[i-1] == '(' || input[i-1] == '{') // if the preceeding value is open bracket
+            else if(input[i-1] == '(') 
             {
                 returnTokens.push('neg');
                 i++;
+            }
+            else if (operators.indexOf(input[i-1]) != -1)
+            {
+                if (input[i-1] != ')')
+                {
+                    returnTokens.push('neg');
+                    i++;
+                }
             }
             else
             {
@@ -164,7 +176,7 @@ function inToPost(tokens)
             stack.push(tokens[i]);
         }
         else if(tokens[i] == '(' || tokens[i] == '(')
-            stack.push(tokens[i]); // stack.push('(');
+            stack.push('(');
         
         else if(tokens[i] == ')' || tokens[i] == '}')
         {
