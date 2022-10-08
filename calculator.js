@@ -9,6 +9,7 @@ function clearEntry()
     if(a == '') return;
     else document.getElementById("result").value = a.substring(0, a.length - 1);
 }
+
 function display(value) 
 {
     document.getElementById("result").value += value;
@@ -20,8 +21,8 @@ function calculate()
     var tokensArray = input.split("");
     var tokens = Splitter(tokensArray); // turn the array of characters into readable tokens
     var postFix = inToPost(tokens); // switch notation from infix to postfix
-    document.getElementById("test").textContent = postFix;
     var answer = evaluate(postFix); // evaluate postfix notation
+    answer = checkValidity(answer);
     document.getElementById("result").value = answer;
 }
 
@@ -198,13 +199,13 @@ function evaluate(tokens)
     var operators = ['+','-','*','/','^'];
     let functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log'];
 
-    if(tokens == "Perror") return "Parenthesis balancing error";
+    if(tokens == "Perror") return "Perror";
 
     for(i = 0; i < tokens.length; i++)
     {
         if (tokens[i] == 'neg')
         {
-            tokens[i+1] = parseFloat(tokens[i + 1])*-1;
+            tokens[i+1] = parseFloat(tokens[i+1])*-1;
             stack.push(tokens[i+1].toString());
             i++;
             continue;
@@ -296,4 +297,20 @@ function getPres(token)
         default:
             return -1;
     }
+}
+
+// Helper function for errors, or NaN answers
+function checkValidity(answer)
+{
+    if(answer == "Perror")
+    {
+        alert('Parenthesis balancing error');
+        return '';
+    }
+    else if (answer.toString() === 'NaN')
+    {
+        alert('Invalid mathematical equation');
+        return '';
+    }
+    else return answer;
 }
