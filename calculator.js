@@ -21,6 +21,7 @@ function calculate()
     var tokensArray = input.split("");
     var tokens = Splitter(tokensArray); // turn the array of characters into readable tokens
     var postFix = inToPost(tokens); // switch notation from infix to postfix
+    document.getElementById("bottomtest").textContent = postFix;
     var answer = evaluate(postFix); // evaluate postfix notation
     answer = checkValidity(answer);
     document.getElementById("result").value = answer;
@@ -148,7 +149,6 @@ function Splitter(input)
 
             if(a == '') { i++; continue; }
             else returnTokens.push(a);
-            //i++;
         }
     }
     return returnTokens;
@@ -160,7 +160,7 @@ function inToPost(tokens)
 {
     var stack = [], list = [], i;
     var operators = ['+','-','*','/','^'];
-    var functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log'];
+    var functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log', 'neg'];
     for(i = 0;  i < tokens.length; i++)
     {
         if(operators.indexOf(tokens[i]) != -1)
@@ -175,10 +175,10 @@ function inToPost(tokens)
                 list.push(stack.pop());
             stack.push(tokens[i]);
         }
-        else if(tokens[i] == '(' || tokens[i] == '(')
+        else if(tokens[i] == '(')
             stack.push('(');
         
-        else if(tokens[i] == ')' || tokens[i] == '}')
+        else if(tokens[i] == ')')
         {
             while(stack[stack.length-1] != '(')
             {
@@ -190,17 +190,13 @@ function inToPost(tokens)
         }
         else list.push(tokens[i]); 
     }
-    //if(stack.peek() == '{' || stack.peek() == '(') return "Paren balancing error";
-    // else
-    {
         while(stack.length != 0)
         {
-            if(stack[stack.length - 1] == '{' || stack[stack.length - 1] == '(' || stack[stack.length - 1] == ')' || stack[stack.length - 1] == '}')
+            if(stack[stack.length - 1] == '(' || stack[stack.length - 1] == ')')
                 return "Perror";
             else list.push(stack.pop());
         }
-        
-    } 
+         
     return list;
 }
 
@@ -209,19 +205,12 @@ function evaluate(tokens)
     var i = 0;
     var stack = [];
     var operators = ['+','-','*','/','^'];
-    let functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log'];
+    let functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log', 'neg'];
 
     if(tokens == "Perror") return "Perror";
 
     for(i = 0; i < tokens.length; i++)
     {
-        if (tokens[i] == 'neg')
-        {
-            tokens[i+1] = parseFloat(tokens[i+1])*-1;
-            stack.push(tokens[i+1].toString());
-            i++;
-            continue;
-        }
         if(operators.indexOf(tokens[i]) != -1)
         {
             var op1 = stack.pop();
@@ -279,6 +268,8 @@ function performFunc(op, func)
             return Math.ln10(op)
         case 'ln':
             return Math.log(op);
+        case 'neg':
+            return -op;
         default:
             return;
     }
