@@ -1,8 +1,10 @@
+// Helper function that clears the screen when the 'C' button is pressed.
 function clearScreen() 
 {
     document.getElementById('result').value = '';
 }
 
+// Helper function to remove the current input by 1, removed when the 'CE' button is pressed.
 function clearEntry()
 {
     let a = document.getElementById('result').value;
@@ -10,30 +12,32 @@ function clearEntry()
     else document.getElementById('result').value = a.substring(0, a.length - 1);
 }
 
+// Helper function to display the value that the user inputs.
 function display(value) 
 {
     document.getElementById('result').value += value;
 }
 
+// Function that is called when the user presses the '=' button.
 function calculate() 
 {
     var input = document.getElementById('result').value;
-    var tokensArray = input.split('');
-    var tokens = Splitter(tokensArray); // turn the array of characters into readable tokens
-    var postFix = inToPost(tokens); // switch notation from infix to postfix
-    var answer = evaluate(postFix); // evaluate postfix notation
-    answer = checkValidity(answer);
+    var tokensArray = input.split('');        // Turn the value in the textbox into an array of singular characters.
+    var tokens = Splitter(tokensArray);       // Turn the array of characters into readable tokens.
+    var postFix = inToPost(tokens);           // Switch notation from infix to postfix.
+    var answer = evaluate(postFix);           // Evaluate postfix notation.
+    answer = checkValidity(answer);           // Check validity of the evaluated notation for 'NaN' or 'Infinity'
     document.getElementById('result').value = answer;
 }
 
+// Function to split the data into readable tokens, specifically designed for numbers that take up more than a single space.
 function Splitter(input)
 {
-    var returnTokens = [];
-    var i = 0; // iterate through the array of characters
+    var i = 0, returnTokens = [];
     var operators = ['+','-','*','/','^', '(', ')'];
     while (i < input.length)
     {
-        // Helps clean up parenthesis confusion.
+        // Clean up parenthesis confusion.
         if (input[i] == '{') input[i] = '(';
         if (input[i] == '}') input[i] = ')';
         
@@ -42,20 +46,21 @@ function Splitter(input)
             returnTokens.push(input[i]);
             i++;
         }
+        
+        // Check to determine if '-' is negation or subtraction.
         else if(input[i] == '-')
         {
-            // checks to determine if it is subtraction or negation
-            if(i === 0) // if position 0
+            if(i === 0)                                   // If '-' is the first value in the array.
             {
                 returnTokens.push('neg');
                 i++;
             }
-            else if(input[i-1] == '(') 
+            else if(input[i-1] == '(')                    // If previous character is open parenthesis.
             {
                 returnTokens.push('neg');
                 i++;
             }
-            else if (operators.indexOf(input[i-1]) != -1)
+            else if (operators.indexOf(input[i-1]) != -1) // If previous character was an operator.
             {
                 if (input[i-1] != ')')
                 {
@@ -69,9 +74,10 @@ function Splitter(input)
                 i++;
             }
         }
+
+        // Differentiate the type of functions and properly push to stack.
         else if(input[i] == 's'|| input[i] == 'c'|| input[i] == 't'|| input[i] == 'l')
         {
-            // differentiate which type of function is being expressed and properly push to stack
             let a = '';
             if(input[i] == 's')
             {
@@ -121,23 +127,15 @@ function Splitter(input)
                     continue;
                 }
             }
-            
         }
+
+        // Inputs that are not operators or functions.
         else
         {  
             let a = '';
             while(i < input.length)
             {
-                //let a = input[i].toString(); // a variable to hold onto the number until we reach a breaking point
-                //a = input[i].toString();
-                //i++;
-                if (!isNaN(input[i]))
-                {
-                    a += input[i];
-                    i++;
-                    continue;
-                }
-                else if (input[i] == '.')
+                if (!isNaN(input[i]) || input[i] == '.')
                 {
                     a += input[i];
                     i++;
@@ -145,8 +143,11 @@ function Splitter(input)
                 }
                 else break;
             }
-
-            if(a == '') { i++; continue; }
+            if(a == '') 
+            { 
+                i++; 
+                continue; 
+            }
             else returnTokens.push(a);
         }
     }
@@ -154,7 +155,7 @@ function Splitter(input)
 
 }
 
-// inspiration for this function from stackoverflow.com/questions/20078413/trouble-with-the-shunting-yard-algorithm
+// Inspiration for this function from stackoverflow.com/questions/20078413/trouble-with-the-shunting-yard-algorithm
 function inToPost(tokens)
 {
     var stack = [], list = [], i;
@@ -162,22 +163,28 @@ function inToPost(tokens)
     var functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log', 'neg'];
     for(i = 0;  i < tokens.length; i++)
     {
+        // If the current token is an operator.
         if(operators.indexOf(tokens[i]) != -1)
         {
             while(stack.length != -1 && getPres(stack[stack.length - 1]) >= getPres(tokens[i]))
                 list.push(stack.pop());
             stack.push(tokens[i]);
         }
+        
+        // If the current token is a function.
         else if(functions.indexOf(tokens[i]) != -1)
         {
             while(stack.length != -1 && getPres(stack[stack.length - 1]) >= getPres(tokens[i]))
                 list.push(stack.pop());
             stack.push(tokens[i]);
         }
+        
+        // If the current token is an open parenthesis.
         else if(tokens[i] == '(')
             stack.push('(');
         
-        else if(tokens[i] == ')')
+        // If the current token is a close parenthesis.
+            else if(tokens[i] == ')')
         {
             while(stack[stack.length-1] != '(')
             {
@@ -188,28 +195,31 @@ function inToPost(tokens)
             stack.pop();
         }
         else list.push(tokens[i]); 
-    }
-        while(stack.length != 0)
-        {
-            if(stack[stack.length - 1] == '(' || stack[stack.length - 1] == ')')
-                return 'Perror';
-            else list.push(stack.pop());
-        }
-         
+    } // End of for loop
+
+    // Check for parenthesis mismatch within the stack.    
+    while(stack.length != 0)
+    {
+        if(stack[stack.length - 1] == '(' || stack[stack.length - 1] == ')')
+            return 'Perror';
+        else list.push(stack.pop());
+    }     
     return list;
 }
 
+// Function to evaluate the PostFix notation and provide the user with an accurate answer.
 function evaluate(tokens)
 {
-    var i = 0;
-    var stack = [];
+    var i = 0, stack = [];
     var operators = ['+','-','*','/','^'];
     let functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log', 'neg'];
 
+    // If there is a parenthesis mismatch, no need to evaluate the expression.
     if(tokens == 'Perror') return 'Perror';
 
     for(i = 0; i < tokens.length; i++)
     {
+        // If the current token is an operator.
         if(operators.indexOf(tokens[i]) != -1)
         {
             var op1 = stack.pop();
@@ -218,6 +228,8 @@ function evaluate(tokens)
             var result = performOperation(parseFloat(op1), parseFloat(op2), tokens[i]);
             stack.push(result);
         }
+
+        // If the current token is a function.
         else if(functions.indexOf(tokens[i]) != -1)
         {
             var op = stack.pop();
@@ -227,9 +239,13 @@ function evaluate(tokens)
         else stack.push(tokens[i]);
         
     }
+    
+    // If there is more than one item on the stack, the math was not performed to completion.
+    // Generally this happens when the user attempts to input 7(8) or 7sin(8).
+    // Solution is to request that the user expressly defines multiplication with '*' operator.
     if(stack.length == 1)
         return stack.pop();
-    else return 'Multi';
+    else return 'NaN';
 }
 
 // Helper function to perform operations involving two operands
@@ -238,11 +254,11 @@ function performOperation(op1, op2, operator)
     switch (operator)
     {
         case '+':
-            return op1 + op2;
+            return op2 + op1;
         case '-':
             return op2 - op1;
         case '*':
-            return op1 * op2;
+            return op2 * op1;
         case '/':
             return op2 / op1;
         case '^':
@@ -314,11 +330,6 @@ function checkValidity(answer)
     else if(answer == 'Infinity')
     {
         alert('Error. Answer results in: ' + answer + '.');
-        return '';
-    }
-    else if(answer == 'Multi')
-    {
-        alert('Multiplication error.');
         return '';
     }
     else if(answer.toString() === 'NaN')
