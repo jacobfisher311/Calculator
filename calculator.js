@@ -26,7 +26,7 @@ function calculate()
     var tokens = Splitter(tokensArray);       // Turn the array of characters into readable tokens.
     var postFix = inToPost(tokens);           // Switch notation from infix to postfix.
     var answer = evaluate(postFix);           // Evaluate postfix notation.
-    answer = checkValidity(answer);           // Check validity of the evaluated notation for 'NaN' or 'Infinity'
+    answer = checkValidity(answer);           // Check validity of the evaluated notation for 'NaN' or 'Infinity.'
     document.getElementById('result').value = answer;
 }
 
@@ -35,11 +35,11 @@ function Splitter(input)
 {
     var i = 0, returnTokens = [];
     var operators = ['+','-','*','/','^', '(', ')'];
-    while (i < input.length)
+    while(i < input.length)
     {
         // Clean up parenthesis confusion.
-        if (input[i] == '{') input[i] = '(';
-        if (input[i] == '}') input[i] = ')';
+        if(input[i] == '{') input[i] = '(';
+        if(input[i] == '}') input[i] = ')';
         
         if(operators.indexOf(input[i]) != -1 && input[i] != '-')
         {
@@ -50,19 +50,24 @@ function Splitter(input)
         // Check to determine if '-' is negation or subtraction.
         else if(input[i] == '-')
         {
-            if(i === 0)                                   // If '-' is the first value in the array.
+            // If '-' is the first value in the array.
+            if(i === 0)                                   
             {
                 returnTokens.push('neg');
                 i++;
             }
-            else if(input[i-1] == '(')                    // If previous character is open parenthesis.
+
+            // If previous character is open parenthesis.
+            else if(input[i-1] == '(')                    
             {
                 returnTokens.push('neg');
                 i++;
             }
-            else if (operators.indexOf(input[i-1]) != -1) // If previous character was an operator.
+
+            // If previous character was an operator.
+            else if(operators.indexOf(input[i-1]) != -1) 
             {
-                if (input[i-1] != ')')
+                if(input[i-1] != ')')
                 {
                     returnTokens.push('neg');
                     i++;
@@ -135,7 +140,7 @@ function Splitter(input)
             let a = '';
             while(i < input.length)
             {
-                if (!isNaN(input[i]) || input[i] == '.')
+                if(!isNaN(input[i]) || input[i] == '.')
                 {
                     a += input[i];
                     i++;
@@ -251,7 +256,7 @@ function evaluate(tokens)
 // Helper function to perform operations involving two operands
 function performOperation(op1, op2, operator)
 {
-    switch (operator)
+    switch(operator)
     {
         case '+':
             return op2 + op1;
@@ -271,7 +276,7 @@ function performOperation(op1, op2, operator)
 // Helper function to perform functions involving a singular operand
 function performFunc(op, func)
 {
-    switch (func)
+    switch(func)
     {
         case 'sin':
             return Math.sin(op);
