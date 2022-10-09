@@ -285,7 +285,7 @@ function performFunc(op, func)
         case 'tan':
             return Math.tan(op);
         case 'cot':
-            return Math.cot(op);
+            return 1 / Math.tan(op);
         case 'log':
             return Math.log10(op)
         case 'ln':
