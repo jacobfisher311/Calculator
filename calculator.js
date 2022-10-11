@@ -398,7 +398,7 @@ function checkValidity(answer)
     }
     else if(answer == 'Infinity')
     {
-        alert('Error. Answer results in: ' + answer + '.');
+        alert('Answer results in infinity.');
         return '';
     }
     else if(answer.toString() === 'NaN')

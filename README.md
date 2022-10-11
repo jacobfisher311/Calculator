@@ -1,15 +1,18 @@
 # Calculator
 A basic calculator capable of doing binary and unary operations utilizing a GUI.
 
-"()" function exactly the same as "{}"
-    ex. (1 + 2} == {1 + 2) == 1 + 2
-    Brackets and parenthesis are for user clarification only, they both function the EXACT same in this calculator.
+To run this calculator: download the source file and leaving the HTML, CSS, and JS code in the same file, run "index.html"
 
-Invalid parenthesis balancing will result in "Parenthesis balancing error"
-If there is valid parenthesis balancing, and there is still an issue, expressions will result in "NaN" or Not a Number
+The file can be ran in Windows or MacOS by simply double clicking "index.html" or, if the code is opened in an IDE, run with/without debugging will result in the same execution.
 
-Multiplication must be specified using "*" operator
-    ex. 4(3) != 4 * 3
+Inputs from the buttons will be displayed on the top display window, and once the user presses the "=" button, the display window will show the solution.
 
-CE = Clear last entry (not dissimilar to "backspace")
-C = Clear screen
+If the input is invalid, there will be a popup window that appears displaying some more information about why the problem did not compute, and provide a button labelled "OK."
+
+If there is an error, and the popup window appears, the display window will clear and the user will have to re-input their equation.
+
+Once the answer for the equation is displayed in the display window, that number can be manipulated by simply adding numbers/operations/functions to what is currently displayed.
+
+C button clears the display window, CE works as a "backspace" clearing the entry from right to left, one character at a time.
+
+Parenthesis "()" and "{}" are interpreted exactly the same, the only difference between the two are visual for the user. 
