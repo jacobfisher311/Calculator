@@ -23,15 +23,16 @@ function calculate()
 {
     var input = document.getElementById('result').value;
     var tokensArray = input.split('');        // Turn the value in the textbox into an array of singular characters.
-    var tokens = Splitter(tokensArray);       // Turn the array of characters into readable tokens.
-    var postFix = inToPost(tokens);           // Switch notation from infix to postfix.
+    var tokens = splitter(tokensArray);       // Turn the array of characters into readable tokens.
+    var validTokens = refactor(tokens);       // Refactor readable tokens, adjusting for negation.
+    var postFix = inToPost(validTokens);      // Switch notation from infix to postfix.
     var answer = evaluate(postFix);           // Evaluate postfix notation.
     answer = checkValidity(answer);           // Check validity of the evaluated notation for 'NaN' or 'Infinity.'
     document.getElementById('result').value = answer;
 }
 
 // Function to split the data into readable tokens, specifically designed for numbers that take up more than a single space.
-function Splitter(input)
+function splitter(input)
 {
     var i = 0, returnTokens = [];
     var operators = ['+','-','*','/','^', '(', ')'];
@@ -160,12 +161,79 @@ function Splitter(input)
 
 }
 
+// Function to refactor the unary '-' properly.
+function refactor(tokens)
+{
+    // Variable i functions as an interator
+    // Variable c functions as a counter for parenthesis to maintain balance.
+    var i = 0; c = 0;
+    var returnTokens = [];
+    while(i < tokens.length)
+    {
+        if(tokens[i] == 'neg')
+        {
+            i++; c++;
+            returnTokens.push('(');
+            returnTokens.push('0');
+            returnTokens.push('-');
+            
+            while(tokens[i] == 'neg')
+            {
+                i++; c++;
+                returnTokens.push('(');
+                returnTokens.push('0');
+                returnTokens.push('-');  
+            }
+            
+            // Maintain integrity of parenthesis in input.
+            if(tokens[i] == '(')
+            {
+                while(tokens[i] != ')')
+                {
+                    if(tokens[i] == 'neg')
+                    {
+                        i++; c++;
+                        returnTokens.push('(');
+                        returnTokens.push('0');
+                        returnTokens.push('-');
+                    }
+                    returnTokens.push(tokens[i]);
+                    i++;
+                }
+                // While loop to add closing parenthesis to maintain balance.
+                while(c > 0) 
+                {
+                    returnTokens.push(')');
+                    c--;
+                }
+                continue;
+            }
+
+            returnTokens.push(tokens[i]);
+            while(c > 0) 
+            {
+                returnTokens.push(')');
+                c--;
+            }
+
+            i++;
+            continue;
+        }
+        
+        // If the token is not negation.
+        returnTokens.push(tokens[i]);
+        i++;
+        
+    }
+    return returnTokens;
+}
+
 // Inspiration for this function from stackoverflow.com/questions/20078413/trouble-with-the-shunting-yard-algorithm
 function inToPost(tokens)
 {
     var stack = [], list = [], i;
     var operators = ['+','-','*','/','^'];
-    var functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log', 'neg'];
+    var functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log'];
     for(i = 0;  i < tokens.length; i++)
     {
         // If the current token is an operator.
@@ -217,7 +285,7 @@ function evaluate(tokens)
 {
     var i = 0, stack = [];
     var operators = ['+','-','*','/','^'];
-    let functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log', 'neg'];
+    let functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log'];
 
     // If there is a parenthesis mismatch, no need to evaluate the expression.
     if(tokens == 'Perror') return 'Perror';
@@ -290,8 +358,6 @@ function performFunc(op, func)
             return Math.log10(op)
         case 'ln':
             return Math.log(op);
-        case 'neg':
-            return -op;
         default:
             return;
     }
@@ -302,8 +368,6 @@ function getPres(token)
 {
     switch(token)
     {
-        case 'neg':
-            return 6;
         case 'sin':
         case 'cos':
         case 'tan':
