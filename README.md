@@ -16,3 +16,5 @@ Once the answer for the equation is displayed in the display window, that number
 C button clears the display window, CE works as a "backspace" clearing the entry from right to left, one character at a time.
 
 Parenthesis "()" and "{}" are interpreted exactly the same, the only difference between the two are visual for the user. 
+
+Multiplication must be explicit. If the user puts 7sin(4) or 7(4) the calculator will throw an error. If the user wants to multiply two numbers, they must use the '*' operator.
