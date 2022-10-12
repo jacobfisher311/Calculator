@@ -228,7 +228,7 @@ function refactor(tokens)
     return returnTokens;
 }
 
-// Inspiration for this function from stackoverflow.com/questions/20078413/trouble-with-the-shunting-yard-algorithm
+// Inspiration for this function from https://stackoverflow.com/questions/20078413/trouble-with-the-shunting-yard-algorithm
 function inToPost(tokens)
 {
     var stack = [], list = [], i;
@@ -316,7 +316,7 @@ function evaluate(tokens)
     // If there is more than one item on the stack, the math was not performed to completion.
     // Generally this happens when the user attempts to input 7(8) or 7sin(8).
     // Solution is to request that the user expressly defines multiplication with '*' operator.
-    if(stack.length == 1)
+    if(stack.length <= 1)
         return stack.pop();
     else return 'NaN';
 }
@@ -398,7 +398,12 @@ function checkValidity(answer)
     }
     else if(answer == 'Infinity')
     {
-        alert('Answer results in infinity.');
+        alert('Answer results in Infinity.');
+        return '';
+    }
+    else if(answer == '-Infinity')
+    {
+        alert('Answer results in -Infinity.');
         return '';
     }
     else if(answer.toString() === 'NaN')
