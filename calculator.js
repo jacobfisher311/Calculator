@@ -35,12 +35,20 @@ function calculate()
 function splitter(input)
 {
     var i = 0, returnTokens = [];
-    var operators = ['+','-','*','/','^', '(', ')'];
+    var operators = ['+','-','*','/','^'];
     while(i < input.length)
     {
         // Clean up parenthesis confusion.
-        if(input[i] == '{') input[i] = '(';
-        if(input[i] == '}') input[i] = ')';
+        if(input[i] == '{' || input[i] == '(') 
+        {
+            returnTokens.push('('); 
+            i++;
+        }
+        if(input[i] == '}' || input[i] == ')') 
+        {
+            returnTokens.push(')');
+            i++;
+        }
         
         if(operators.indexOf(input[i]) != -1 && input[i] != '-')
         {
@@ -64,15 +72,10 @@ function splitter(input)
                 returnTokens.push('neg');
                 i++;
             }
-
-            // If previous character was an operator.
-            else if(operators.indexOf(input[i-1]) != -1) 
+            else if(operators.indexOf(input[i-1]) != -1)
             {
-                if(input[i-1] != ')')
-                {
-                    returnTokens.push('neg');
-                    i++;
-                }
+                returnTokens.push('neg');
+                i++;
             }
             else
             {
@@ -219,7 +222,15 @@ function refactor(tokens)
             i++;
             continue;
         }
-        
+        // If the user provides an open parenthesis immediately followed by a close parenthesis, throw an error.
+        if(i + 1 < tokens.length)
+        {
+            if(tokens[i] == '(' && tokens[i+1] == ')')
+            {
+                return 'eparen';
+            }
+        }
+
         // If the token is not negation.
         returnTokens.push(tokens[i]);
         i++;
@@ -231,6 +242,12 @@ function refactor(tokens)
 // Inspiration for this function from https://stackoverflow.com/questions/20078413/trouble-with-the-shunting-yard-algorithm
 function inToPost(tokens)
 {
+    // If there is empty parenthesis.
+    if(tokens == 'eparen')
+    {
+        return tokens;
+    }
+
     var stack = [], list = [], i;
     var operators = ['+','-','*','/','^'];
     var functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log'];
@@ -288,7 +305,7 @@ function evaluate(tokens)
     let functions = ['sin', 'cos', 'tan', 'cot', 'ln', 'log'];
 
     // If there is a parenthesis mismatch, no need to evaluate the expression.
-    if(tokens == 'Perror') return 'Perror';
+    if(tokens == 'Perror' || tokens == 'eparen') return tokens;
 
     for(i = 0; i < tokens.length; i++)
     {
@@ -394,6 +411,11 @@ function checkValidity(answer)
     if(answer == 'Perror')
     {
         alert('Parenthesis balancing error.');
+        return '';
+    }
+    if(answer == 'eparen')
+    {
+        alert('Invalid mathematical equation, equation should not contain empty parenthesis.');
         return '';
     }
     else if(answer == 'Infinity')
